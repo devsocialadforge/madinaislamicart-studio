@@ -68,15 +68,14 @@ export default defineType({
       type: 'number',
       title: 'Discount Percentage',
       description: 'Discount percentage (0-100)',
-      initialValue: 0,
+      readOnly: true,
       validation: (r) => r.min(0).max(100),
     }),
     defineField({
       name: 'discountPrice',
       type: 'number',
       title: 'Discount Price',
-      description: 'Final price after discount (auto-calculated)',
-      readOnly: true,
+      description: 'Final price after discount',
       validation: (r) => r.min(0),
     }),
 
@@ -103,6 +102,30 @@ export default defineType({
       title: 'In Stock',
       description: 'Whether this product is currently in stock/available',
       initialValue: true,
+    }),
+
+    // Rating and Reviews
+    defineField({
+      name: 'rating',
+      type: 'number',
+      title: 'Rating',
+      description: 'Product rating (0-5)',
+      validation: (r) => r.min(0).max(5),
+    }),
+    defineField({
+      name: 'reviewCount',
+      type: 'number',
+      title: 'Review Count',
+      description: 'Number of reviews for this product',
+      validation: (r) => r.min(0),
+    }),
+
+    // Product Size
+    defineField({
+      name: 'size',
+      type: 'string',
+      title: 'Size',
+      description: 'Product size (e.g., "24x18 inches", "Large", "Medium")',
     }),
 
     // Images
