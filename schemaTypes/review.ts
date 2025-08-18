@@ -72,6 +72,46 @@ export default defineType({
       description: 'Review is approved and visible on the website',
       initialValue: false,
     }),
+    defineField({
+      name: 'productImages',
+      type: 'array',
+      title: 'Product Images',
+      description: 'Multiple images of the product being reviewed (optional)',
+      of: [
+        {
+          type: 'image',
+          options: {hotspot: true},
+          fields: [
+            {
+              name: 'alt',
+              type: 'string',
+              title: 'Alt Text',
+              description: 'Alternative text for accessibility',
+              validation: (r) => r.required(),
+            },
+          ],
+        },
+      ],
+      validation: (r) => r.max(5),
+    }),
+    defineField({
+      name: 'productVideo',
+      type: 'file',
+      title: 'Product Video',
+      description: 'Video of the product being reviewed (optional)',
+      options: {
+        accept: 'video/*',
+      },
+      fields: [
+        {
+          name: 'alt',
+          type: 'string',
+          title: 'Alt Text',
+          description: 'Alternative text for accessibility',
+          validation: (r) => r.required(),
+        },
+      ],
+    }),
   ],
   preview: {
     select: {
