@@ -189,7 +189,7 @@ export default defineType({
               return {
                 filter: 'category._ref == $categoryId',
                 params: {
-                  categoryId: document.category._ref,
+                  categoryId: (document.category as any)._ref,
                 },
               }
             },
