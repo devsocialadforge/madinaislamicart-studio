@@ -6,27 +6,19 @@ export default defineType({
   type: 'document',
   fields: [
     defineField({
+      name: 'product',
+      type: 'reference',
+      title: 'Product',
+      description: 'The product this review is for',
+      to: [{type: 'product'}],
+      validation: (r) => r.required(),
+    }),
+    defineField({
       name: 'name',
       type: 'string',
       title: 'Customer Name',
       description: 'Full name of the customer',
       validation: (r) => r.required(),
-    }),
-    defineField({
-      name: 'avatar',
-      type: 'image',
-      title: 'Customer Avatar',
-      description: 'Profile picture of the customer (optional)',
-      options: {hotspot: true},
-      fields: [
-        {
-          name: 'alt',
-          type: 'string',
-          title: 'Alt Text',
-          description: 'Alternative text for accessibility',
-          validation: (r) => r.required(),
-        },
-      ],
     }),
     defineField({
       name: 'rating',
@@ -63,14 +55,14 @@ export default defineType({
       type: 'boolean',
       title: 'Verified Purchase',
       description: 'Whether this is a verified purchase review',
-      initialValue: false,
+      initialValue: true,
     }),
     defineField({
       name: 'isApproved',
       type: 'boolean',
       title: 'Approved',
       description: 'Review is approved and visible on the website',
-      initialValue: false,
+      initialValue: true,
     }),
     defineField({
       name: 'productImages',
@@ -119,12 +111,13 @@ export default defineType({
       subtitle: 'review',
       rating: 'rating',
       media: 'avatar',
+      product: 'product.title',
     },
     prepare(selection) {
-      const {title, subtitle, rating, media} = selection
+      const {title, subtitle, rating, media, product} = selection
       return {
         title: title || 'Anonymous Review',
-        subtitle: `${rating} stars - ${subtitle?.slice(0, 50)}${subtitle?.length > 50 ? '...' : ''}`,
+        subtitle: `${product ? `Review for: ${product} - ` : ''}${rating} stars - ${subtitle?.slice(0, 50)}${subtitle?.length > 50 ? '...' : ''}`,
         media: media,
       }
     },

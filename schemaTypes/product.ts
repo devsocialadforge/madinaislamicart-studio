@@ -178,11 +178,22 @@ export default defineType({
       name: 'relatedProducts',
       type: 'array',
       title: 'Related Products',
-      description: 'Other products that are related to this one',
+      description: 'Other products that are related to this one (same category)',
       of: [
         {
           type: 'reference',
           to: [{type: 'product'}],
+          options: {
+            filter: ({document}) => {
+              if (!document?.category) return {}
+              return {
+                filter: 'category._ref == $categoryId',
+                params: {
+                  categoryId: document.category._ref,
+                },
+              }
+            },
+          },
         },
       ],
     }),
