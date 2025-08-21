@@ -55,28 +55,32 @@ export default defineType({
       validation: (r) => r.required().min(1),
     }),
 
-    // Pricing
+    // Add these fields for overall discount calculation
     defineField({
-      name: 'price',
+      name: 'discountedBasePrice',
       type: 'number',
-      title: 'Price',
-      description: 'Product price in your currency',
-      validation: (r) => r.required().min(0),
+      title: 'Discounted Base Price',
+      description: 'Lowest discounted price across all sizes',
+      readOnly: true,
+      validation: (r) => r.min(0),
     }),
     defineField({
-      name: 'discountPercentage',
+      name: 'overallDiscountPercentage',
       type: 'number',
-      title: 'Discount Percentage',
-      description: 'Discount percentage (0-100)',
+      title: 'Overall Discount Percentage',
+      description: 'Discount percentage based on base price vs. discounted base price',
       readOnly: true,
       validation: (r) => r.min(0).max(100),
     }),
+
+    // Add this field to track overall discount percentage
     defineField({
-      name: 'discountPrice',
+      name: 'maxDiscountPercentage',
       type: 'number',
-      title: 'Discount Price',
-      description: 'Final price after discount',
-      validation: (r) => r.min(0),
+      title: 'Maximum Discount Percentage',
+      description: 'Highest discount percentage across all sizes',
+      readOnly: true,
+      validation: (r) => r.min(0).max(100),
     }),
 
     // Product Flags
@@ -104,28 +108,73 @@ export default defineType({
       initialValue: true,
     }),
 
-    // Rating and Reviews
+    // Product Size and Pricing
     defineField({
-      name: 'rating',
-      type: 'number',
-      title: 'Rating',
-      description: 'Product rating (0-5)',
-      validation: (r) => r.min(0).max(5),
-    }),
-    defineField({
-      name: 'reviewCount',
-      type: 'number',
-      title: 'Review Count',
-      description: 'Number of reviews for this product',
-      validation: (r) => r.min(0),
+      name: 'sizes',
+      type: 'array',
+      title: 'Product Sizes',
+      description: 'Available sizes with their respective prices',
+      of: [
+        {
+          type: 'object',
+          name: 'sizeOption',
+          fields: [
+            {
+              name: 'size',
+              type: 'string',
+              title: 'Size',
+              description: 'Size identifier (e.g., "24x18 inches", "Large", "Medium")',
+              validation: (r) => r.required(),
+            },
+            {
+              name: 'price',
+              type: 'number',
+              title: 'Size-specific Price',
+              description: 'Price for this specific size',
+              validation: (r) => r.required().min(0),
+            },
+            {
+              name: 'discountPrice',
+              type: 'number',
+              title: 'Size-specific Discount Price',
+              description: 'Discounted price for this specific size',
+              validation: (r) => r.min(0),
+            },
+            {
+              name: 'inStock',
+              type: 'boolean',
+              title: 'In Stock',
+              description: 'Whether this size is currently available',
+              initialValue: true,
+            },
+          ],
+          preview: {
+            select: {
+              title: 'size',
+              subtitle: 'price',
+              stock: 'inStock',
+            },
+            prepare(selection: any) {
+              const {title, subtitle, stock} = selection
+              return {
+                title: title,
+                subtitle: `$${subtitle || 0} ${stock ? '(In Stock)' : '(Out of Stock)'}`,
+              }
+            },
+          },
+        },
+      ],
+      validation: (r) => r.required().min(1),
     }),
 
-    // Product Size
+    // Base Price (for reference)
     defineField({
-      name: 'size',
-      type: 'string',
-      title: 'Size',
-      description: 'Product size (e.g., "24x18 inches", "Large", "Medium")',
+      name: 'basePrice',
+      type: 'number',
+      title: 'Base Price',
+      description: 'Starting price for the product (lowest size price)',
+      readOnly: true,
+      validation: (r) => r.min(0),
     }),
 
     // Images
