@@ -55,32 +55,22 @@ export default defineType({
       validation: (r) => r.required().min(1),
     }),
 
+    // Base Price (for reference)
+    defineField({
+      name: 'basePrice',
+      type: 'number',
+      title: 'Base Price',
+      description: 'Starting price for the product (lowest size price)',
+      validation: (r) => r.min(0),
+    }),
+
     // Add these fields for overall discount calculation
     defineField({
       name: 'discountedBasePrice',
       type: 'number',
       title: 'Discounted Base Price',
       description: 'Lowest discounted price across all sizes',
-      readOnly: true,
       validation: (r) => r.min(0),
-    }),
-    defineField({
-      name: 'overallDiscountPercentage',
-      type: 'number',
-      title: 'Overall Discount Percentage',
-      description: 'Discount percentage based on base price vs. discounted base price',
-      readOnly: true,
-      validation: (r) => r.min(0).max(100),
-    }),
-
-    // Add this field to track overall discount percentage
-    defineField({
-      name: 'maxDiscountPercentage',
-      type: 'number',
-      title: 'Maximum Discount Percentage',
-      description: 'Highest discount percentage across all sizes',
-      readOnly: true,
-      validation: (r) => r.min(0).max(100),
     }),
 
     // Product Flags
@@ -165,16 +155,6 @@ export default defineType({
         },
       ],
       validation: (r) => r.required().min(1),
-    }),
-
-    // Base Price (for reference)
-    defineField({
-      name: 'basePrice',
-      type: 'number',
-      title: 'Base Price',
-      description: 'Starting price for the product (lowest size price)',
-      readOnly: true,
-      validation: (r) => r.min(0),
     }),
 
     // Images
